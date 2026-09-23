@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management System</title>
+  
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #eef2f5;
+      color: #333;
+    }
+    
+    /* Header Bar */
+    .header {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 16px 24px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    /* Main Container Card */
+    .container {
+      max-width: 950px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    /* Form Layout Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      font-size: 11px;
+      color: #475569;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    input, select {
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 13px;
+      outline: none;
+      background-color: #fff;
+    }
+    input:focus, select:focus {
+      border-color: #2563eb;
+    }
+
+    /* Action Buttons */
+    .btn-group {
+      margin-top: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 8px;
+    }
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .btn-save {
+      background: #2563eb;
+      color: white;
+    }
+    .btn-save:hover {
+      background: #1d4ed8;
+    }
+    .btn-cancel {
+      background: #64748b;
+      color: white;
+    }
+    .btn-edit {
+      background: #f59e0b;
+      color: white;
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+    .btn-remove {
+      background: #ef4444;
+      color: white;
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    /* List Header & Search Bar */
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .list-header h2 {
+      margin: 0;
+    }
+    .search-input {
+      width: 250px;
+    }
+
+    /* Student List Table Styling */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    th {
+      background-color: #f1f5f9;
+      color: #334155;
+      font-weight: 600;
+    }
+    tr:hover {
+      background-color: #f8fafc;
+    }
+
+    @media (max-width: 650px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .search-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Dark Header -->
+  <div class="header">
+    <h1>Student Management System</h1>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      
+      <!-- FORM SECTION -->
+      <h2 id="formTitle">Add Student</h2>
+      <form id="studentForm">
+        <input type="hidden" id="editIndex" value="-1">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="lrn">LRN</label>
+            <input type="text" id="lrn" name="lrn" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" required>
+          </div>
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label for="middleName">Middle Name</label>
+            <input type="text" id="middleName" name="middleName">
+          </div>
+          <div class="form-group">
+            <label for="sex">Sex</label>
+            <select id="sex" name="sex" required>
+              <option value="">Select Sex</option>
+              <option value="M">M</option>
+              <option value="F">F</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="grade">Grade</label>
+            <select id="grade" name="grade" required>
+              <option value="">Select Grade</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="section">Section</label>
+            <input type="text" id="section" name="section" required>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn-save" id="saveBtn">Save Student</button>
+          <button type="button" class="btn-cancel" id="cancelBtn" style="display:none;" onclick="resetForm()">Cancel</button>
+        </div>
+      </form>
+
+      <!-- TABLE SECTION WITH SEARCH BAR -->
+      <div class="list-header">
+        <h2>Student List</h2>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by name, LRN, grade..." onkeyup="searchStudents()">
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>LRN</th>
+              <th>Last Name</th>
+              <th>First Name</th>
+              <th>Middle Name</th>
+              <th>Sex</th>
+              <th>Grade</th>
+              <th>Section</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody">
+            <!-- Saved students appear here -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Load existing data from browser storage or start with an empty array
+    let students = JSON.parse(localStorage.getItem('registered_students')) || [];
+
+    const studentForm = document.getElementById('studentForm');
+
+    // ==========================================
+    // SAVE OR UPDATE STUDENT
+    // ==========================================
+    studentForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const editIndex = parseInt(document.getElementById('editIndex').value);
+      
+      const studentData = {
+        lrn: document.getElementById('lrn').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        firstName: document.getElementById('firstName').value.trim(),
+        middleName: document.getElementById('middleName').value.trim() || 'N/A',
+        sex: document.getElementById('sex').value,
+        grade: document.getElementById('grade').value,
+        section: document.getElementById('section').value.trim(),
+        status: 'Active'
+      };
+
+      if (editIndex === -1) {
+        // Prevent registering duplicate LRNs
+        const existingStudent = students.find(s => s.lrn === studentData.lrn);
+        if (existingStudent) {
+          alert('A student with this LRN is already registered!');
+          return;
+        }
+
+        // Add new student
+        students.push(studentData);
+        alert('Student registered successfully!');
+      } else {
+        // Update existing student
+        students[editIndex] = studentData;
+        alert('Student record updated successfully!');
+      }
+
+      // Save into browser local storage
+      localStorage.setItem('registered_students', JSON.stringify(students));
+
+      // Reset form and search input, then refresh table
+      resetForm();
+      document.getElementById('searchInput').value = '';
+      renderTable(students);
+    });
+
+    // ==========================================
+    // RENDER STUDENT TABLE
+    // ==========================================
+    function renderTable(dataToRender) {
+      const tbody = document.getElementById('studentTableBody');
+      tbody.innerHTML = '';
+
+      if (!dataToRender || dataToRender.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No matching student records found.</td></tr>';
+        return;
+      }
+
+      dataToRender.forEach((student) => {
+        // Find actual index in the master 'students' array for edit/remove actions
+        const originalIndex = students.findIndex(s => s.lrn === student.lrn);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${student.lrn}</td>
+          <td>${student.lastName}</td>
+          <td>${student.firstName}</td>
+          <td>${student.middleName}</td>
+          <td>${student.sex}</td>
+          <td>${student.grade}</td>
+          <td>${student.section}</td>
+          <td>${student.status}</td>
+          <td>
+            <button type="button" class="btn-edit" onclick="editStudent(${originalIndex})">Edit</button>
+            <button type="button" class="btn-remove" onclick="removeStudent(${originalIndex})">Remove</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ==========================================
+    // SEARCH FUNCTIONALITY
+    // ==========================================
+    function searchStudents() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      if (query === '') {
+        renderTable(students);
+        return;
+      }
+
+      const filtered = students.filter(student => {
+        return student.lrn.toLowerCase().includes(query) ||
+               student.lastName.toLowerCase().includes(query) ||
+               student.firstName.toLowerCase().includes(query) ||
+               student.middleName.toLowerCase().includes(query) ||
+               student.grade.toLowerCase().includes(query) ||
+               student.section.toLowerCase().includes(query);
+      });
+
+      renderTable(filtered);
+    }
+
+    // ==========================================
+    // EDIT STUDENT
+    // ==========================================
+    function editStudent(index) {
+      const student = students[index];
+
+      document.getElementById('editIndex').value = index;
+      document.getElementById('lrn').value = student.lrn;
+      document.getElementById('lrn').readOnly = true; // Lock LRN while editing
+      document.getElementById('lastName').value = student.lastName;
+      document.getElementById('firstName').value = student.firstName;
+      document.getElementById('middleName').value = student.middleName === 'N/A' ? '' : student.middleName;
+      document.getElementById('sex').value = student.sex;
+      document.getElementById('grade').value = student.grade;
+      document.getElementById('section').value = student.section;
+
+      document.getElementById('formTitle').innerText = 'Edit Student Details';
+      document.getElementById('saveBtn').innerText = 'Update Student';
+      document.getElementById('cancelBtn').style.display = 'inline-block';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // REMOVE STUDENT
+    // ==========================================
+    function removeStudent(index) {
+      if (confirm('Are you sure you want to remove this student?')) {
+        students.splice(index, 1);
+        localStorage.setItem('registered_students', JSON.stringify(students));
+        
+        // Re-apply search filter after deletion
+        searchStudents();
+      }
+    }
+
+    // RESET FORM TO DEFAULT
+    function resetForm() {
+      studentForm.reset();
+      document.getElementById('editIndex').value = '-1';
+      document.getElementById('lrn').readOnly = false;
+      document.getElementById('formTitle').innerText = 'Add Student';
+      document.getElementById('saveBtn').innerText = 'Save Student';
+      document.getElementById('cancelBtn').style.display = 'none';
+    }
+
+    // Initial load
+    renderTable(students);
+  </script>
+
+</body>
+</html>
